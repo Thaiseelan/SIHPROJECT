@@ -1,0 +1,142 @@
+.header {
+  background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-item i {
+  font-size: 16px;
+}
+
+.student-badge {
+  width: 40px;
+  height: 40px;
+  background: #f59e0b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.student-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.student-text span:first-child {
+  font-weight: 600;
+}
+
+.student-text span:last-child {
+  opacity: 0.8;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 20px;
+  }
+  
+  .header h1 {
+    font-size: 20px;
+  }
+  
+  .header-right {
+    gap: 15px;
+  }
+  
+  .status-item {
+    font-size: 12px;
+  }
+  
+  .student-badge {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .student-text {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 10px 15px;
+  }
+  
+  .header h1 {
+    font-size: 18px;
+  }
+  
+  .header-right {
+    gap: 10px;
+  }
+  
+  .status-item {
+    font-size: 11px;
+  }
+  
+  .student-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  .student-text {
+    font-size: 10px;
+  }
+}

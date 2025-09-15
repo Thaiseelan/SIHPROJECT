@@ -1,0 +1,439 @@
+/* Reset margins/padding for login page only */
+.login-container * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Ensure body can scroll normally when login page is not active */
+body:not(.login-active) {
+    overflow: auto;
+}
+
+.login-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background: #ffffff;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.login-left-pane {
+    flex: 1;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-left-pane::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="40" cy="80" r="0.8" fill="rgba(255,255,255,0.08)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.login-mindcare-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    color: white;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-mindcare-logo {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 30px;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.login-mindcare-logo::before {
+    content: '🧠';
+    font-size: 40px;
+}
+
+.login-mindcare-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-mindcare-subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    margin-bottom: 50px;
+    opacity: 0.9;
+}
+
+.login-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.login-feature-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.login-feature-icon {
+    font-size: 24px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.login-feature-text {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.login-mindcare-tagline {
+    font-size: 16px;
+    opacity: 0.8;
+    line-height: 1.5;
+    width: 100%;
+}
+
+.login-right-pane {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 40px;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+}
+
+.welcome-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    line-height: 1.2;
+}
+
+.welcome-subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.trust-indicators {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    justify-content: center;
+}
+
+.trust-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #666;
+}
+
+.trust-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.trust-icon.secure {
+    background: #E8F5E8;
+    color: #22C55E;
+}
+
+.trust-icon.confidential {
+    background: #FEE2E2;
+    color: #EF4444;
+}
+
+.trust-icon.support {
+    background: #E0F2FE;
+    color: #0EA5E9;
+}
+
+.mobile-form {
+    margin-bottom: 16px;
+}
+
+.mobile-input-container {
+    display: flex;
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 auto 16px auto;
+    max-width: 400px;
+}
+
+.country-code-dropdown {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #F9FAFB;
+    border-right: 1px solid #E5E7EB;
+    min-width: 100px;
+}
+
+.mobile-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 16px;
+    font-size: 16px;
+    color: #1a1a1a;
+}
+
+.start-journey-btn {
+    width: 100%;
+    max-width: 400px;
+    background: linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin: 0 auto;
+    display: block;
+}
+
+
+.privacy-text {
+    font-size: 12px;
+    color: #6B7280;
+    line-height: 1.4;
+    margin-bottom: 24px;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #E5E7EB;
+}
+
+.divider span {
+    color: #6B7280;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.social-login {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-btn.facebook {
+    background: #1877F2;
+    color: #fff;
+}
+
+.social-btn.email {
+    background: #EA4335;
+    color: #fff;
+}
+
+.social-btn.apple {
+    background: #000;
+    color: #fff;
+}
+
+.social-icon {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.crisis-support {
+    text-align: center;
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.crisis-link {
+    color: #8B5CF6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1024px) {
+    .login-container {
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .login-left-pane {
+        height: 400px;
+        width: 100%;
+        padding: 0;
+    }
+
+    .login-mindcare-title {
+        font-size: 36px;
+    }
+
+    .login-mindcare-subtitle {
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .login-features-grid {
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .login-feature-card {
+        padding: 20px 12px;
+    }
+
+    .login-feature-text {
+        font-size: 13px;
+    }
+
+    .login-mindcare-tagline {
+        font-size: 14px;
+    }
+
+    .login-right-pane {
+        width: 100%;
+        height: calc(100vh - 400px);
+        padding: 40px 20px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-left-pane {
+        height: 350px;
+        padding: 0;
+    }
+
+    .login-mindcare-logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px;
+    }
+
+    .login-mindcare-logo::before {
+        font-size: 30px;
+    }
+
+    .login-mindcare-title {
+        font-size: 28px;
+        margin-bottom: 12px;
+    }
+
+    .login-mindcare-subtitle {
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .login-features-grid {
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .login-feature-card {
+        padding: 16px 10px;
+    }
+
+    .login-feature-icon {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .login-feature-text {
+        font-size: 12px;
+    }
+
+    .login-mindcare-tagline {
+        font-size: 13px;
+    }
+
+    .login-right-pane {
+        height: calc(100vh - 350px);
+        padding: 30px 15px;
+        overflow: hidden;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 0;
+    }
+
+    .form-container {
+        max-width: 100%;
+    }
+
+    .welcome-title {
+        font-size: 26px;
+    }
+}
