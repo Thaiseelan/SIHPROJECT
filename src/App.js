@@ -4,6 +4,7 @@ import ChatPage from './components/ChatPage';
 import LoginPage from './components/LoginPage';
 import Resources from './components/Resources';
 import BookSession from './components/BookSession';
+import BookTherapist from './components/BookTherapist';
 import './App.css';
 
 function App() {
@@ -79,6 +80,8 @@ function App() {
         return <Resources onNavigate={handleNavigation} />;
       case 'book':
         return <BookSession onNavigate={handleNavigation} />;
+      case 'book-therapist':
+        return <BookTherapist onNavigate={handleNavigation} />;
       default:
         return <Dashboard onNavigate={handleNavigation} />;
     }
