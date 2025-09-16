@@ -6,10 +6,12 @@ import Resources from './components/Resources';
 import BookSession from './components/BookSession';
 import BookTherapist from './components/BookTherapist';
 import './App.css';
+import LandingPage from './components/landingpage';
+import TrialTest from './components/TrialTest';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeSection, setActiveSection] = useState('dashboard');
+  const [activeSection, setActiveSection] = useState('landing');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -31,6 +33,10 @@ function App() {
       window.history.replaceState({ section: 'dashboard' }, '', '#dashboard');
     } catch (_) { }
     setActiveSection('dashboard');
+  };
+
+  const handleGetStarted = () => {
+    setActiveSection('login');
   };
 
   // Manage body class for scrolling
@@ -72,8 +78,14 @@ function App() {
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'landing':
+        return <LandingPage onGetStarted={handleGetStarted} />;
+      case 'login':
+        return <LoginPage onLogin={handleLogin} />;
       case 'dashboard':
         return <Dashboard onNavigate={handleNavigation} />;
+      case 'trial-test':
+        return <TrialTest />;
       case 'chat':
         return <ChatPage />;
       case 'resources':
@@ -83,14 +95,9 @@ function App() {
       case 'book-therapist':
         return <BookTherapist onNavigate={handleNavigation} />;
       default:
-        return <Dashboard onNavigate={handleNavigation} />;
+        return <LandingPage onGetStarted={handleGetStarted} />;
     }
   };
-
-  // Show LoginPage if not logged in
-  if (!isLoggedIn) {
-    return <LoginPage onLogin={handleLogin} />;
-  }
 
   return (
     <div className="app">

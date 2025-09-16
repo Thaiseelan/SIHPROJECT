@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, Clock, User, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import { userSessions as defaultUserSessions } from '../data/userSessions';
 
-const MySessions = ({ sessions = defaultUserSessions, onReschedule = () => {}, onCancel = () => {} }) => {
+const MySessions = ({ sessions = defaultUserSessions, onReschedule = () => {}, onCancel = () => {}, toastMessage = '' }) => {
+    const [toasts, setToasts] = useState([]);
+
+    useEffect(() => {
+        if (toastMessage) {
+            const id = Date.now();
+            setToasts((prev) => [...prev, { id, message: toastMessage }]);
+            // const timer = setTimeout(() => {
+            //     setToasts((prev) => prev.filter((t) => t.id !== id));
+            // }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [toastMessage]);
+
     const getStatusIcon = (status) => {
         switch (status) {
             case 'ongoing':
@@ -34,6 +47,13 @@ const MySessions = ({ sessions = defaultUserSessions, onReschedule = () => {}, o
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-8">
+            <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 2000 }}>
+                {toasts.map((t) => (
+                    <div key={t.id} style={{ background: '#10b981', color: 'white', padding: '14px 18px', borderRadius: 12, marginBottom: 10, fontWeight: 700, boxShadow: '0 14px 30px rgba(16,185,129,0.28)' }}>
+                        {t.message}
+                    </div>
+                ))}
+            </div>
             <div className="mb-8">
                 <h2 className="text-2xl font-bold text-purple-600 mb-6">Upcoming Sessions</h2>
                 {upcomingSessions.length > 0 ? (

@@ -19,18 +19,35 @@ const BookTherapist = ({ onNavigate }) => {
     const immediateSlots = therapist.availability.filter(slot => slot.type === 'immediate' && slot.available);
     const scheduledSlots = therapist.availability.filter(slot => slot.type === 'scheduled' && slot.available);
 
-    const handleBooking = (slot) => {
-        const sessionTypeText = sessionType === 'online' ? 'Online' : 'In-person';
-        alert(`${sessionTypeText} session booked successfully for ${slot.date} at ${slot.time}!`);
+    const bookAndRedirect = (slot) => {
+        const newSession = {
+            id: `session-${Date.now()}`,
+            therapistId: therapist.id,
+            therapistName: therapist.name,
+            date: slot.date,
+            time: slot.time,
+            status: 'pending',
+            type: sessionType === 'online' ? 'online' : 'offline',
+        };
+        try {
+            sessionStorage.setItem('pendingNewSession', JSON.stringify(newSession));
+            sessionStorage.setItem('navToSessions', '1');
+        } catch (_) {}
         if (onNavigate) onNavigate('book');
     };
 
+    const handleBooking = (slot) => {
+        bookAndRedirect(slot);
+    };
+
     const handleReschedule = (sessionId) => {
-        alert(`Rescheduling session ${sessionId}`);
+        // Placeholder for reschedule
     };
 
     const handleRebook = (sessionId) => {
-        alert(`Rebooking session ${sessionId}`);
+        // For now rebook first scheduled slot if exists
+        const slot = scheduledSlots[0] || immediateSlots[0];
+        if (slot) bookAndRedirect(slot);
     };
 
     return (
@@ -60,7 +77,7 @@ const BookTherapist = ({ onNavigate }) => {
             </header>
 
             <div className="max-w-7xl mx-auto px-4 py-8">
-                {/* Therapist summary card */}
+                {/* Therapist summary and details remain unchanged */}
                 <div className="bg-white rounded-2xl p-8 shadow-lg">
                     <div className="flex flex-col md:flex-row gap-8">
                         <div className="md:w-1/3">
@@ -80,7 +97,7 @@ const BookTherapist = ({ onNavigate }) => {
                             </div>
                         </div>
                         <div className="md:flex-1">
-                            {/* Stats and quick info from BookingPage */}
+                            {/* Stats and quick info (omitted for brevity) */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-blue-200 shadow-sm">
                                     <div className="flex items-center space-x-3 mb-3">
@@ -148,17 +165,8 @@ const BookTherapist = ({ onNavigate }) => {
                 <div className="bg-white rounded-2xl p-6 shadow-lg mt-8 border border-blue-200">
                     <h3 className="text-xl font-bold text-slate-700 mb-4">Choose Session Type</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <button
-                            onClick={() => setSessionType('online')}
-                            className={`flex items-center space-x-3 px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
-                                sessionType === 'online'
-                                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700 shadow-md'
-                                    : 'border-blue-200 bg-white text-slate-600 hover:border-cyan-300'
-                            }`}
-                        >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                sessionType === 'online' ? 'bg-cyan-500' : 'bg-blue-100'
-                            }`}>
+                        <button onClick={() => setSessionType('online')} className={`flex items-center space-x-3 px-6 py-4 rounded-xl border-2 transition-all duration-200 ${sessionType === 'online' ? 'border-cyan-500 bg-cyan-50 text-cyan-700 shadow-md' : 'border-blue-200 bg-white text-slate-600 hover:border-cyan-300'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${sessionType === 'online' ? 'bg-cyan-500' : 'bg-blue-100'}`}>
                                 <Video className={`h-5 w-5 ${sessionType === 'online' ? 'text-white' : 'text-blue-600'}`} />
                             </div>
                             <div className="text-left">
@@ -166,17 +174,8 @@ const BookTherapist = ({ onNavigate }) => {
                                 <p className="text-sm opacity-80">Join via video call from anywhere</p>
                             </div>
                         </button>
-                        <button
-                            onClick={() => setSessionType('offline')}
-                            className={`flex items-center space-x-3 px-6 py-4 rounded-xl border-2 transition-all duration-200 ${
-                                sessionType === 'offline'
-                                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md'
-                                    : 'border-blue-200 bg-white text-slate-600 hover:border-indigo-300'
-                            }`}
-                        >
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                                sessionType === 'offline' ? 'bg-indigo-500' : 'bg-indigo-100'
-                            }`}>
+                        <button onClick={() => setSessionType('offline')} className={`flex items-center space-x-3 px-6 py-4 rounded-xl border-2 transition-all duration-200 ${sessionType === 'offline' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md' : 'border-blue-200 bg-white text-slate-600 hover:border-indigo-300'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${sessionType === 'offline' ? 'bg-indigo-500' : 'bg-indigo-100'}`}>
                                 <MapPin className={`h-5 w-5 ${sessionType === 'offline' ? 'text-white' : 'text-indigo-600'}`} />
                             </div>
                             <div className="text-left">
@@ -207,11 +206,7 @@ const BookTherapist = ({ onNavigate }) => {
                         <div className="space-y-3">
                             {immediateSlots.length > 0 ? (
                                 immediateSlots.map((slot) => (
-                                    <div
-                                        key={slot.id}
-                                        className="flex items-center justify-between p-3 border border-cyan-200 rounded-lg hover:bg-cyan-50 cursor-pointer transition-colors"
-                                        onClick={() => handleBooking(slot)}
-                                    >
+                                    <div key={slot.id} className="flex items-center justify-between p-3 border border-cyan-200 rounded-lg hover:bg-cyan-50 cursor-pointer transition-colors" onClick={() => handleBooking(slot)}>
                                         <div className="flex items-center space-x-3">
                                             <div className="w-3 h-3 rounded-full bg-cyan-400"></div>
                                             <div>
@@ -269,22 +264,14 @@ const BookTherapist = ({ onNavigate }) => {
                         </div>
                         <div className="space-y-3">
                             {scheduledSlots.map((slot) => (
-                                <div
-                                    key={slot.id}
-                                    className="flex items-center justify-between p-3 border border-indigo-200 rounded-lg hover:bg-indigo-50 cursor-pointer transition-colors"
-                                    onClick={() => handleBooking(slot)}
-                                >
+                                <div key={slot.id} className="flex items-center justify-between p-3 border border-indigo-200 rounded-lg hover:bg-indigo-50 cursor-pointer transition-colors" onClick={() => handleBooking(slot)}>
                                     <div className="flex items-center space-x-3">
                                         <div className="w-3 h-3 rounded-full bg-indigo-400"></div>
                                         <div>
                                             <div className="flex items-center space-x-2 text-slate-800">
                                                 <Calendar className="h-4 w-4" />
                                                 <span className="font-medium">
-                                                    {new Date(slot.date).toLocaleDateString('en-US', {
-                                                        weekday: 'long',
-                                                        month: 'short',
-                                                        day: 'numeric',
-                                                    })}
+                                                    {new Date(slot.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
                                                 </span>
                                             </div>
                                             <div className="flex items-center space-x-2 text-slate-600">
@@ -297,9 +284,7 @@ const BookTherapist = ({ onNavigate }) => {
                                                 ) : (
                                                     <MapPin className="h-3 w-3 text-indigo-500" />
                                                 )}
-                                                <span className="text-xs text-slate-500">
-                                                    {sessionType === 'online' ? 'Online' : 'In-person'}
-                                                </span>
+                                                <span className="text-xs text-slate-500">{sessionType === 'online' ? 'Online' : 'In-person'}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -315,7 +300,7 @@ const BookTherapist = ({ onNavigate }) => {
                 {/* Previous sessions sample */}
                 <div className="mt-8 bg-gradient-to-br from-white to-slate-50 rounded-xl border border-slate-200 p-6 shadow-lg">
                     <div className="flex items-center space-x-3 mb-6">
-                        <div className="w-10 h-10 bg-gradient-to-r from-slate-500 to-blue-600 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-gradient-to-r from-slate-500 to blue-600 rounded-full flex items-center justify-center">
                             <User className="h-5 w-5 text-white" />
                         </div>
                         <div>

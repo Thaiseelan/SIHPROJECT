@@ -1,14 +1,34 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Users, Clock, Calendar, Phone } from 'lucide-react';
 import MySessions from './MySessions';
 import { therapists } from '../data/therapists';
+import { userSessions as defaultUserSessions } from '../data/userSessions';
 
 const BookSession = ({ onNavigate }) => {
     const [activeTab, setActiveTab] = useState('find');
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedSpecialty, setSelectedSpecialty] = useState("All Specialties");
     const [sortBy, setSortBy] = useState("Sort by Rating");
+    const [sessions, setSessions] = useState(defaultUserSessions || []);
+    const [toastMessage, setToastMessage] = useState('');
     const [sortOrder, setSortOrder] = useState('Descending');
+
+    useEffect(() => {
+        try {
+            const navigateToSessions = sessionStorage.getItem('navToSessions');
+            const pendingRaw = sessionStorage.getItem('pendingNewSession');
+            if (pendingRaw) {
+                const pending = JSON.parse(pendingRaw);
+                setSessions(prev => [pending, ...prev]);
+                setToastMessage('Session booked successfully');
+                sessionStorage.removeItem('pendingNewSession');
+            }
+            if (navigateToSessions === '1') {
+                setActiveTab('sessions');
+                sessionStorage.removeItem('navToSessions');
+            }
+        } catch (_) {}
+    }, []);
 
     const getColorClasses = (color) => {
         const colorMap = {
@@ -117,9 +137,7 @@ const BookSession = ({ onNavigate }) => {
                         try {
                             sessionStorage.setItem('selectedTherapistId', String(therapist.id));
                         } catch (_) {}
-                        if (onNavigate) {
-                            onNavigate('book-therapist');
-                        }
+                        if (onNavigate) onNavigate('book-therapist');
                     }}
                 >
                     Book Now
@@ -218,7 +236,7 @@ const BookSession = ({ onNavigate }) => {
                         </div>
                     </>
                 ) : (
-                    <MySessions />
+                    <MySessions sessions={sessions} toastMessage={toastMessage} />
                 )}
             </div>
         </div>

@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Dashboard.css';
 
 const Dashboard = ({ onNavigate }) => {
   const [selectedMood, setSelectedMood] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [toasts, setToasts] = useState([]);
+  const toastIdRef = useRef(0);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const showToast = (message) => {
+    const id = ++toastIdRef.current;
+    setToasts((prev) => [...prev, { id, message }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 3000);
+  };
+
+  useEffect(() => {
+    // Listen for session booked events
+    const handler = (e) => {
+      if (e.detail && e.detail.type === 'session_booked') {
+        showToast('Session booked successfully');
+      }
+    };
+    window.addEventListener('app:notify', handler);
+    return () => window.removeEventListener('app:notify', handler);
+  }, []);
 
   const moods = [
     { id: 'happy', emoji: '😊', label: 'Happy' },
@@ -26,7 +47,9 @@ const Dashboard = ({ onNavigate }) => {
       description: 'Schedule with licensed therapist',
       color: 'calendar',
       badge: 'Available',
-      image: '👩‍⚕️'
+      image: '👩‍⚕️',
+      imageUrl: 'https://images.pexels.com/photos/3184396/pexels-photo-3184396.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      onClick: () => onNavigate && onNavigate('book')
     },
     {
       icon: 'fas fa-bullseye',
@@ -35,7 +58,9 @@ const Dashboard = ({ onNavigate }) => {
       description: 'Comprehensive wellness evaluation',
       color: 'target',
       badge: 'Free',
-      image: '📊'
+      image: '📊',
+      imageUrl: 'https://images.pexels.com/photos/3184296/pexels-photo-3184296.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      onClick: () => onNavigate && onNavigate('trial-test')
     },
     {
       icon: 'fas fa-users',
@@ -44,7 +69,8 @@ const Dashboard = ({ onNavigate }) => {
       description: 'Connect with like-minded individuals',
       color: 'community',
       badge: 'Active',
-      image: '👥'
+      image: '👥',
+      imageUrl: 'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?auto=compress&cs=tinysrgb&w=1200'
     },
     {
       icon: 'fas fa-gift',
@@ -53,7 +79,8 @@ const Dashboard = ({ onNavigate }) => {
       description: 'Unlock advanced wellness tools',
       color: 'gift',
       badge: 'Limited Time',
-      image: '🎁'
+      image: '🎁',
+      imageUrl: 'https://images.pexels.com/photos/2072143/pexels-photo-2072143.jpeg?auto=compress&cs=tinysrgb&w=1200'
     },
     {
       icon: 'fas fa-brain',
@@ -62,7 +89,8 @@ const Dashboard = ({ onNavigate }) => {
       description: 'Guided meditation sessions',
       color: 'meditation',
       badge: 'Popular',
-      image: '🧘‍♀️'
+      image: '🧘‍♀️',
+      imageUrl: 'https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1200'
     }
   ];
 
@@ -73,14 +101,15 @@ const Dashboard = ({ onNavigate }) => {
   ];
 
   const videos = [
-    { title: 'Understanding Anxiety', subtitle: 'Mental Health Education', duration: '12 min', views: '2.1M views' },
-    { title: 'Building Resilience', subtitle: 'Wellness Guide', duration: '8 min', views: '890K views' }
+    { title: 'Understanding Anxiety', subtitle: 'Mental Health Education', duration: '12 min', views: '2.1M views', imageUrl: 'https://images.pexels.com/photos/4101143/pexels-photo-4101143.jpeg?auto=compress&cs=tinysrgb&w=1200' },
+    { title: 'Building Resilience', subtitle: 'Wellness Guide', duration: '8 min', views: '890K views', imageUrl: 'https://images.pexels.com/photos/4144101/pexels-photo-4144101.jpeg?auto=compress&cs=tinysrgb&w=1200' },
+    { title: 'Mindful Breathing Basics', subtitle: 'Guided Practice', duration: '6 min', views: '1.2M views', imageUrl: 'https://images.pexels.com/photos/3822621/pexels-photo-3822621.jpeg?auto=compress&cs=tinysrgb&w=1200' }
   ];
 
   const musicTracks = [
     { title: 'Calming Piano Melodies', subtitle: 'Peaceful Sounds', category: 'Relaxation', duration: '45 min', color: 'piano' },
     { title: 'Nature Sounds for Focus', subtitle: 'Ambient Collection', category: 'Concentration', duration: '60 min', color: 'nature' },
-    { title: 'Sleep Stories & Sounds', subtitle: 'Bedtime Collection', category: 'Sleep', duration: '90 min', color: 'sleep' }
+    { title: 'Sleep Stories & Sounds', subtitle: 'Bedtime Collection', category: 'Sleep', color: 'sleep', duration: '90 min' }
   ];
 
   const dailyTracker = [
@@ -142,6 +171,12 @@ const Dashboard = ({ onNavigate }) => {
 
       {/* Main Content */}
       <div className={`main-content ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+        {/* Snackbar Container */}
+        <div className="toast-container">
+          {toasts.map((t) => (
+            <div key={t.id} className="toast-item">{t.message}</div>
+          ))}
+        </div>
         {/* Header */}
         <header className="dashboard-header">
           <div className="header-left">
@@ -229,15 +264,18 @@ const Dashboard = ({ onNavigate }) => {
             <h2>Quick Actions</h2>
             <div className="quick-actions-grid">
               {quickActions.map((action, index) => (
-                <div key={index} className="action-card">
+                <div key={index} className="action-card" onClick={action.onClick} role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter') action.onClick && action.onClick(); }}>
                   <div className="action-image-section">
-                    <div className="action-image">
-                      <span className="action-emoji">{action.image}</span>
+                    <div className="action-image" style={{ width: '100%', height: '100%', position: 'relative' }}>
+                      {action.imageUrl && (
+                        <img src={action.imageUrl} alt={action.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      )}
+                      {/* <span className="action-emoji" style={{ position: 'absolute', bottom: 12, left: 16 }}>{action.image}</span> */}
                     </div>
-                    <div className="action-badges">
+                    {/* <div className="action-badges">
                       <span className="action-badge primary">{action.badge}</span>
                       <span className="action-badge secondary">AI Powered</span>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="action-content">
                     <div className="action-header">
@@ -247,8 +285,13 @@ const Dashboard = ({ onNavigate }) => {
                       </div>
                     </div>
                     <h3>{action.title}</h3>
-                    <p className="action-subtitle">{action.subtitle}</p>
-                    <p className="action-description">{action.description}</p>
+                    <div className="action-row">
+                      <div className="action-text">
+                        <p className="action-subtitle">{action.subtitle}</p>
+                        <p className="action-description">{action.description}</p>
+                      </div>
+                      <button className="explore-btn" onClick={(e) => { e.stopPropagation(); action.onClick && action.onClick(); }}>Explore</button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -287,8 +330,12 @@ const Dashboard = ({ onNavigate }) => {
             <div className="videos-grid">
               {videos.map((video, index) => (
                 <div key={index} className="video-card">
-                  <div className="video-thumbnail">
-                    <i className="fas fa-play-circle"></i>
+                  <div className="video-thumbnail" style={{ position: 'relative' }}>
+                    {video.imageUrl && (
+                      <img src={video.imageUrl} alt={video.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    )}
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(0,0,0,0.35), rgba(0,0,0,0.05))' }} />
+                    <i className="fas fa-play-circle" style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontSize: 36 }}></i>
                   </div>
                   <div className="video-content">
                     <h3>{video.title}</h3>
