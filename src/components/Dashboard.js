@@ -180,7 +180,7 @@ const Dashboard = ({ onNavigate }) => {
         {/* Header */}
         <header className="dashboard-header">
           <div className="header-left">
-            <h1>MindCare AI</h1>
+            <h1>MindCare</h1>
           </div>
           <div className="header-right">
             <div className="status-item">

@@ -271,7 +271,7 @@ const Progress = ({ data, onRetake }) => {
           </div>
         </div>
         <p style={{ color: '#6b7280', marginBottom: 20 }}>{data.level.description}</p>
-        <button onClick={onRetake} style={{ backgroundColor: '#6FBFAD', color: 'white', border: 0, borderRadius: 12, padding: '10px 16px', cursor: 'pointer' }}>Retake Assessment</button>
+        <button onClick={onRetake} style={{ backgroundColor: '#6FBFAD', color: 'white', border: 0, borderRadius: 12, padding: '10px 16px', cursor: 'pointer' }}>Back to Dashboard</button>
       </div>
     </div>
   );

@@ -25,7 +25,7 @@ const Sidebar = ({ isOpen, activeSection, onNavigate, onToggleSidebar }) => {
             <span className="close-btn" onClick={onToggleSidebar}>
               <i className="fas fa-times"></i>
             </span>
-            <h3>MindCare AI</h3>
+            <h3>MindCare</h3>
           </div>
         )}
       </div>

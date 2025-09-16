@@ -9,9 +9,9 @@ const MySessions = ({ sessions = defaultUserSessions, onReschedule = () => {}, o
         if (toastMessage) {
             const id = Date.now();
             setToasts((prev) => [...prev, { id, message: toastMessage }]);
-            // const timer = setTimeout(() => {
-            //     setToasts((prev) => prev.filter((t) => t.id !== id));
-            // }, 3000);
+            const timer = setTimeout(() => {
+                setToasts((prev) => prev.filter((t) => t.id !== id));
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [toastMessage]);

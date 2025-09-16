@@ -18,7 +18,7 @@ export default function LoginPage({ onBackToFeatures, onLogin }) {
             <div className="login-left-pane">
                 <div className="login-mindcare-content">
                     <div className="login-mindcare-logo"></div>
-                    <h1 className="login-mindcare-title">MindCare AI</h1>
+                    <h1 className="login-mindcare-title">MindCare</h1>
                     <p className="login-mindcare-subtitle">Your Personal Mental Health Companion</p>
 
                     <div className="login-features-grid">
