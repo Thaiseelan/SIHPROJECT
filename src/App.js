@@ -7,7 +7,7 @@ import BookSession from './components/BookSession';
 import BookTherapist from './components/BookTherapist';
 import './App.css';
 import LandingPage from './components/landingpage';
-import TrialTest from './components/TrialTest';
+import TrialTest from './TrialTest';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

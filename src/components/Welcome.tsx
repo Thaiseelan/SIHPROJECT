@@ -1,112 +1,183 @@
-import React from 'react';
-import { Brain, Heart, Shield, TrendingUp } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Question } from '../types/assessment';
+import { questions } from '../data/questions';
 
-interface WelcomeProps {
-  onStartAssessment: () => void;
+interface AssessmentProps {
+  onComplete: (answers: { questionId: number; points: number }[]) => void;
 }
 
-export const Welcome: React.FC<WelcomeProps> = ({ onStartAssessment }) => {
+export const Assessment: React.FC<AssessmentProps> = ({ onComplete }) => {
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<{ questionId: number; points: number }[]>([]);
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  
+  const currentQuestion = questions[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+  
+  const handleAnswer = (questionId: number, points: number) => {
+    const newAnswers = answers.filter(a => a.questionId !== questionId);
+    newAnswers.push({ questionId, points });
+    setAnswers(newAnswers);
+    setSelectedOption(points);
+    
+    // Auto-advance after a short delay for better UX
+    setTimeout(() => {
+      if (currentQuestionIndex < questions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setSelectedOption(null);
+      } else {
+        onComplete(newAnswers);
+      }
+    }, 800);
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedOption(null);
+    } else {
+      onComplete(answers);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+      const prevAnswer = answers.find(a => a.questionId === questions[currentQuestionIndex - 1].id);
+      setSelectedOption(prevAnswer?.points || null);
+    }
+  };
+
+  const getCurrentAnswer = () => {
+    return answers.find(a => a.questionId === currentQuestion.id);
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'easy': return 'text-white border-transparent';
+      case 'medium': return 'text-white border-transparent';
+      case 'critical': return 'text-white border-transparent';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getCategoryBgColor = (category: string) => {
+    switch (category) {
+      case 'easy': return '#6FBFAD';
+      case 'medium': return '#4A90E2';
+      case 'critical': return '#8B7355';
+      default: return '#6B7280';
+    }
+  };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-blue-50 p-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f0f9f7 0%, #e8f4f8 100%)' }}>
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6" style={{ backgroundColor: '#6FBFAD20' }}>
-              <Brain style={{ color: '#6FBFAD' }} size={40} />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-              Mental Health Support System
-            </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Take our comprehensive mood assessment to better understand your mental wellness and receive personalized recommendations.
-            </p>
+    <div className="min-h-screen p-4 flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f0f9f7 0%, #e8f4f8 100%)' }}>
+      <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden">
+        {/* Progress Header */}
+        <div className="p-6 text-white" style={{ backgroundColor: '#6FBFAD' }}>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Mental Health Assessment</h2>
+            <span className="text-white opacity-90 text-sm">
+              Question {currentQuestionIndex + 1} of {questions.length}
+            </span>
+          </div>
+          <div className="w-full rounded-full h-3" style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}>
+            <div 
+              className="bg-white h-3 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Question Content */}
+        <div className="p-8">
+          <div className="mb-6">
+            <span 
+              className={`inline-block px-4 py-2 rounded-full text-xs font-medium border ${getCategoryColor(currentQuestion.category)}`}
+              style={{ backgroundColor: getCategoryBgColor(currentQuestion.category) }}
+            >
+              {currentQuestion.category.charAt(0).toUpperCase() + currentQuestion.category.slice(1)} Level
+            </span>
+          </div>
+          
+          <h3 className="text-2xl font-semibold text-gray-800 mb-8">
+            {currentQuestion.text}
+          </h3>
+
+          {/* Answer Options */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            {currentQuestion.options.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  handleAnswer(currentQuestion.id, option.points);
+                }}
+                className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left hover:shadow-lg transform hover:scale-[1.02] ${
+                  selectedOption === option.points || getCurrentAnswer()?.points === option.points
+                    ? 'shadow-lg transform scale-[1.02]'
+                    : 'border-gray-200 hover:border-opacity-50'
+                }`}
+                style={{
+                  borderColor: selectedOption === option.points || getCurrentAnswer()?.points === option.points 
+                    ? '#6FBFAD' 
+                    : '#E5E7EB',
+                  backgroundColor: selectedOption === option.points || getCurrentAnswer()?.points === option.points 
+                    ? '#6FBFAD10' 
+                    : 'white',
+                  boxShadow: selectedOption === option.points || getCurrentAnswer()?.points === option.points 
+                    ? '0 8px 25px rgba(111, 191, 173, 0.2)' 
+                    : '0 2px 4px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <div className="flex items-center justify-center space-x-3">
+                  <span className="text-2xl sm:text-3xl">{option.emoji}</span>
+                  <div>
+                    <div className="font-medium text-gray-800 text-sm sm:text-base">{option.label}</div>
+                  </div>
+                </div>
+              </button>
+            ))}
           </div>
 
-          {/* Features */}
-          <div className="grid md:grid-cols-3 gap-8 mb-10">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: '#6FBFAD20' }}>
-                <Heart style={{ color: '#6FBFAD' }} size={28} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Comprehensive Assessment</h3>
-              <p className="text-gray-600">15 carefully crafted questions across different complexity levels</p>
+          {/* Navigation */}
+          <div className="flex justify-between items-center">
+            <button
+              onClick={handlePrevious}
+              disabled={currentQuestionIndex === 0}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-all ${
+                currentQuestionIndex === 0
+                  ? 'text-gray-400 cursor-not-allowed'
+                  : 'hover:shadow-md'
+              }`}
+              style={{
+                color: currentQuestionIndex === 0 ? '#9CA3AF' : '#6FBFAD',
+                backgroundColor: currentQuestionIndex === 0 ? 'transparent' : '#6FBFAD10'
+              }}
+            >
+              <ChevronLeft size={20} />
+              <span>Previous</span>
+            </button>
+
+            <div className="text-center text-sm text-gray-500">
+              {answers.length} of {questions.length} answered
             </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: '#4A90E220' }}>
-                <TrendingUp style={{ color: '#4A90E2' }} size={28} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Progress Tracking</h3>
-              <p className="text-gray-600">Visual progress indicators and mood level categorization</p>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: '#F5E9DA' }}>
-                <Shield style={{ color: '#8B7355' }} size={28} />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Personalized Support</h3>
-              <p className="text-gray-600">Tailored recommendations based on your assessment results</p>
-            </div>
+
+            <button
+              onClick={handleNext}
+              disabled={!getCurrentAnswer()}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                getCurrentAnswer()
+                  ? 'text-white shadow-md hover:shadow-lg'
+                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              }`}
+              style={{
+                backgroundColor: getCurrentAnswer() ? '#6FBFAD' : '#F3F4F6'
+              }}
+            >
+              <span>{currentQuestionIndex === questions.length - 1 ? 'Complete' : 'Next'}</span>
+              <ChevronRight size={20} />
+            </button>
           </div>
-
-          {/* Assessment Info */}
-          <div className="rounded-xl p-6 mb-8" style={{ backgroundColor: '#6FBFAD10' }}>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">What to Expect:</h3>
-            <div className="grid md:grid-cols-2 gap-4 text-left">
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: '#6FBFAD' }}></div>
-                <div>
-                  <p className="font-medium text-gray-800">15 Questions Total</p>
-                  <p className="text-gray-600 text-sm">Categorized into easy, medium, and critical levels</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: '#6FBFAD' }}></div>
-                <div>
-                  <p className="font-medium text-gray-800">Emoji-Based Responses</p>
-                  <p className="text-gray-600 text-sm">5 intuitive options for each question</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: '#6FBFAD' }}></div>
-                <div>
-                  <p className="font-medium text-gray-800">10-15 Minutes</p>
-                  <p className="text-gray-600 text-sm">Complete at your own pace</p>
-                </div>
-              </div>
-              <div className="flex items-start space-x-3">
-                <div className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ backgroundColor: '#6FBFAD' }}></div>
-                <div>
-                  <p className="font-medium text-gray-800">Instant Results</p>
-                  <p className="text-gray-600 text-sm">Get your mood level and recommendations immediately</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <button
-            onClick={onStartAssessment}
-            className="text-white px-8 py-4 rounded-xl font-medium text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-            style={{ 
-              backgroundColor: '#6FBFAD',
-              boxShadow: '0 4px 15px rgba(111, 191, 173, 0.3)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#5da394';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#6FBFAD';
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
-          >
-            Start Your Assessment
-          </button>
-
-          {/* Disclaimer */}
-          <p className="text-sm text-gray-500 mt-6 max-w-2xl mx-auto">
-            This assessment is designed to help you understand your current mental state and is not a substitute for professional medical advice.
-          </p>
         </div>
       </div>
     </div>
