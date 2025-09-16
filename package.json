@@ -1,31 +1,36 @@
 {
-  "name": "mindcare-ai",
+  "name": "sihproject",
   "version": "1.0.0",
-  "description": "Mental Wellness Platform - MindCare AI",
+  "description": "A comprehensive React-based mental wellness application that combines all the features from the provided images into a single, functional web application.",
   "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Thaiseelan/SIHPROJECT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Thaiseelan/SIHPROJECT/issues"
+  },
+  "homepage": "https://github.com/Thaiseelan/SIHPROJECT#readme",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.2",
+    "lite-server": "^2.6.1",
+    "vite": "^7.1.5"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "react-router-dom": "^6.8.1",
-    "lucide-react": "^0.263.1"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "axios": "^1.12.2",
+    "framer-motion": "^12.23.13",
+    "lucide-react": "^0.544.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
   }
 }
