@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './LoginPage.css';
-
+import { GoogleLogin } from '@react-oauth/google';
+import { auth } from "./firebase";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 export default function LoginPage({ onBackToFeatures, onLogin }) {
     const [mobileNumber, setMobileNumber] = useState('');
     const [countryCode] = useState('+91');
+    const [phone, setPhone] = useState("");
+    const [otp, setOtp] = useState("");
+    const [step, setStep] = useState("register");
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Call onLogin to navigate to dashboard
-        if (onLogin) {
-            onLogin();
-        }
+    const register = async () => {
+        await fetch("http://localhost:5000/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone }),
+        });
+        setStep("verify");
     };
 
     return (
@@ -56,23 +62,38 @@ export default function LoginPage({ onBackToFeatures, onLogin }) {
                         <div className="trust-item"><div className="trust-icon confidential">❤️</div><span>Confidential</span></div>
                         <div className="trust-item"><div className="trust-icon support">👥</div><span>24/7 Support</span></div>
                     </div>
+                    <div>
+                        {step === "register" && (
+                            <>
+                                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" />
+                                <button onClick={register}>Send OTP</button>
+                            </>
+                        )}
+                        {step === "verify" && (
+                            <>
+                                <input value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter OTP" />
+                                <button onClick={verify}>Verify</button>
+                            </>
+                        )}
+                    </div>
 
-                    <form onSubmit={handleSubmit} className="mobile-form">
-                        <div className="mobile-input-container">
-                            <div className="country-code-dropdown"><span className="flag">🇮🇳</span><span className="code">{countryCode}</span></div>
-                            <input type="tel" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} placeholder="Enter your mobile number" className="mobile-input" required />
-                        </div>
-                        <button type="submit" className="start-journey-btn">Start Your Journey</button>
-                    </form>
 
                     <p className="privacy-text">By continuing, you agree to our privacy policy and terms of service designed to protect student wellbeing.</p>
 
                     <div className="divider"><span>Or connect with</span></div>
 
                     <div className="social-login">
-                        <button className="social-btn facebook"><span className="social-icon">f</span></button>
-                        <button className="social-btn email"><span className="social-icon">✉</span></button>
-                        <button className="social-btn apple"><span className="social-icon">🍎</span></button>
+                        <GoogleLogin
+                            onSuccess={credentialResponse => {
+                                console.log(credentialResponse);
+                                if (onLogin) {
+                                    onLogin();
+                                }
+                            }}
+                            onError={() => {
+                                console.log('Login Failed');
+                            }}
+                        />
                     </div>
 
                     <div className="crisis-support"><span>Need immediate help?</span><button className="crisis-link">Crisis Support Available 24/7</button></div>
