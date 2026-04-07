@@ -3,7 +3,8 @@
 A comprehensive React-based mental wellness application that combines all the features from the provided images into a single, functional web application.
 
 ## Features
-
+rdytfugihojkpl'
+4
 ### 🏠 Dashboard
 - **Mood Selection**: Interactive mood cards with emoji selection
 - **AI Chat Assistant**: Virtual assistant with statistics and call-to-action buttons
